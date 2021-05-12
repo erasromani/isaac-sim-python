@@ -153,6 +153,60 @@ class Camera:
         return self.name
 
 
+class Camera:
+    """
+    Camera object that contain state information for a camera in the scene.
+    """
+    def __init__(self, camera_path, translation, rotation):
+        """
+        Initializes the Camera object.
+
+        Args:
+            camera_path (str): path of camera in stage hierarchy
+            translation (list or tuple): camera position
+            rotation (list or tuple): camera orientation described by euler angles in degrees
+        """
+        self.prim = self._kit.create_prim(
+            camera_path,
+            "Camera",
+            translation=translation,
+            rotation=rotation,
+        )
+        self.name = self.prim.GetPrimPath().name
+        self.vpi = omni.kit.viewport.get_viewport_interface
+
+    def set_translate(self, position):
+        """
+        Set camera position.
+
+        Args:
+            position (tuple): camera position specified by (X, Y, Z)
+        """
+        if not isinstance(position, tuple): position = tuple(position)
+        translate_attr = self.prim.GetAttribute("xformOp:translate")
+        translate_attr.Set(position)
+    
+    def set_rotate(self, rotation):
+        """
+        Set camera position.
+
+        Args:
+            rotation (tuple): camera orientation specified by three euler angles in degrees
+        """
+        if not isinstance(rotation, tuple): rotation = tuple(rotation)
+        rotate_attr = self.prim.GetAttribute("xformOp:rotateZYX")
+        rotate_attr.Set(rotation)
+
+    def activate(self):
+        """
+        Activate camera to viewport.
+        """
+        self.vpi.get_viewport_window().set_active_camera(str(self.prim.GetPath()))
+
+    def __repr__(self):
+        return self.name
+
+
 class RigidBody:
     """
     RigidBody objects that contains state information of the rigid body.
