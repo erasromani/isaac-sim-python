@@ -1,0 +1,4 @@
+*.txt
+*.dmp
+**/__pycache__/
+*.pyc
